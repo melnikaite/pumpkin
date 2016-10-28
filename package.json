@@ -1,0 +1,18 @@
+{
+  "name": "pumpkin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "cleverbot-node": "^0.2.2",
+    "google-tts-api": "0.0.1",
+    "node-record-lpcm16": "melnikaite/node-record-lpcm16",
+    "request": "^2.76.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

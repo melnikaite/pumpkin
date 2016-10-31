@@ -1,47 +1,25 @@
-var rec = require('node-record-lpcm16'),
-  request = require('request');
+var cp = require('child_process'),
+  bot = require('./cleverbot'),
+  recognize = require('./recognize'),
+  synthesize = require('./synthesize');
 
-//require('request').debug = true;
-
-var witToken = process.env.WIT_TOKEN; // get one from wit.ai!
-var bot = require('./cleverbot');
-var say = require('./say');
-say.active = false;
-
-exports.parseResult = function (err, resp, body) {
-  parsed = JSON.parse(body)._text;
-  console.log('YOU: ' + parsed);
+exports.parseResult = function (parsed) {
   if (!parsed) return;
-
+  console.log('YOU: ' + parsed);
+  exports.mic.kill();
   bot.ask(parsed, function (response) {
-    say.active = true;
-    console.log('BOT: ' + response.message);
-    say.text(response.message, function () {
-      say.active = false;
+    console.log('PUMPKIN: ' + response.message);
+    synthesize.text(response.message, function () {
+      if(cp.execSync('pgrep -f play').toString().split('\n').length < 3) {
+        exports.listen();
+      }
     });
   });
 };
 
-exports.stream = rec.start({silence: '1 0.1 1% -1 0.1 1%', verbose: false});
-
-var queue = Buffer.alloc(0);
-
-setInterval(function () {
-  if (queue.length == 0) return;
-
-  request.post({
-    'url': 'https://api.wit.ai/speech',
-    'headers': {
-      'Authorization': 'Bearer ' + witToken,
-      'Content-Type': 'audio/raw;encoding=signed-integer;bits=16;rate=16000;endian=little'
-    },
-    body: queue
-  }, exports.parseResult);
-
-  queue = Buffer.alloc(0);
-}, 3000);
-
-exports.stream.on('data', function (chunk) {
-  if (say.active) return;
-  queue = Buffer.concat([queue, chunk]);
-});
+exports.listen = function () {
+  //exports.mic = cp.spawn('arecord', ['--format=S16_LE', '--rate=48000', '--channels=1']);
+  exports.mic = cp.spawn('rec', ['-q', '-r', '48000', '-c', '1', '-e', 'signed-integer', '-b', '16', '-t', 'wav', '-']);
+  recognize.speech(exports.mic.stdout, exports.parseResult);
+};
+exports.listen();

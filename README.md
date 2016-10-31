@@ -26,4 +26,6 @@ This module however, requires you to install [SoX](http://sox.sourceforge.net).
 
 ## Usage
 
-`WIT_TOKEN=YOUR_TOKEN node index.js`
+`STT=WIT STT_TOKEN=XXX STT_DELAY=3000 TTS=GOOGLE TTS_LANG=ru node index.js`
+
+`STT=WATSON STT_USERNAME=XXX STT_PASSWORD=XXX TTS=WATSON TTS_USERNAME=XXX TTS_PASSWORD=XXX node index.js`

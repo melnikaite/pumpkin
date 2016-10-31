@@ -7,7 +7,8 @@
     "cleverbot-node": "^0.2.2",
     "google-tts-api": "0.0.1",
     "node-record-lpcm16": "melnikaite/node-record-lpcm16",
-    "request": "^2.76.0"
+    "request": "^2.76.0",
+    "watson-developer-cloud": "^2.7.1"
   },
   "devDependencies": {},
   "scripts": {
